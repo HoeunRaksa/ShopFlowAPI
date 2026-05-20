@@ -1,36 +1,212 @@
-# Flower Spring API
+# ShopFlowAPI
 
-This is a Spring Boot 2.7.18 REST API for managing flowers, built to be compatible with Java 8.
+ShopFlowAPI is a RESTful backend application developed using **Spring Boot** to support modern e-commerce mobile applications. The API provides secure authentication, product management, user management, order processing, payment workflows, and database integration for scalable shopping platforms.
 
-## Features
-- **CRUD Operations**: Manage flowers (name, species, color, price, stock).
-- **Search**: Search flowers by name or filter by color.
-- **H2 Database**: Uses an in-memory database for quick start.
-- **Data Initialization**: Automatically seeds the database with sample flowers.
+The project was built to strengthen practical experience in **Spring Boot**, **REST API development**, **JWT authentication**, **database management**, and **full-stack application architecture**. It serves as the backend system for mobile applications developed with Flutter.
 
-## Project Structure
-- `com.flower.spring.model`: Entity definitions.
-- `com.flower.spring.repository`: JPA repositories.
-- `com.flower.spring.service`: Business logic.
-- `com.flower.spring.controller`: REST endpoints.
+---
 
-## API Endpoints
-- `GET /api/flowers`: Get all flowers (supports `?name=...` search).
-- `GET /api/flowers/{id}`: Get flower by ID.
-- `GET /api/flowers/color/{color}`: Filter flowers by color.
-- `POST /api/flowers`: Add a new flower.
-- `PUT /api/flowers/{id}`: Update flower info.
-- `DELETE /api/flowers/{id}`: Remove a flower.
+# Features
 
-## How to Run
-1. Open this project in **IntelliJ IDEA**, **Eclipse**, or **VS Code**.
-2. Ensure you have **Java 8** or higher installed.
-3. Run the `FlowerSpringApplication` main method.
-4. Access the API at `http://localhost:8080/api/flowers`.
-5. H2 Console is available at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:flowerdb`, Username: `sa`, Password: empty).
+### Authentication & Security
+- User registration and login
+- JWT Authentication & Authorization
+- Protected API endpoints
+- Secure access control using Spring Security
 
-## Dependencies
-- Spring Web
-- Spring Data JPA
-- H2 Database
-- Project Lombok
+### Product Management
+- Create products
+- Update products
+- Delete products
+- Product search & filtering
+- Product image upload
+- Category management
+
+### User Features
+- User profile management
+- Change password
+- Upload profile image
+- User information retrieval
+
+### Order & Payment
+- Shopping cart integration
+- Order creation and processing
+- Checkout workflow
+- Payment verification support
+
+### Backend Features
+- RESTful API architecture
+- File upload system
+- Exception handling
+- Validation handling
+- Layered architecture
+- Database integration
+
+---
+
+# Technologies Used
+
+- Java 17
+- Spring Boot
+- Spring Security
+- JWT Authentication
+- Hibernate / JPA
+- Maven
+- MySQL
+- Swagger / OpenAPI
+- Lombok
+- Git & GitHub
+
+---
+
+# Architecture
+
+Project structure follows layered architecture:
+
+```txt
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
+```
+
+Folders:
+
+```txt
+controller/
+service/
+repository/
+entity/
+dto/
+config/
+security/
+utils/
+```
+
+---
+
+# Main Functionalities
+
+✔ Authentication System  
+✔ JWT Security  
+✔ Product CRUD  
+✔ Category Management  
+✔ User Management  
+✔ Order Processing  
+✔ File Upload System  
+✔ REST APIs  
+✔ Payment Support  
+✔ MySQL Integration  
+
+---
+
+# Example API Endpoints
+
+Authentication:
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/verify-otp
+```
+
+Products:
+
+```http
+GET  /api/product
+POST /api/product/create
+PUT  /api/product/{id}
+DELETE /api/product/{id}
+```
+
+Users:
+
+```http
+GET /api/user/me
+PUT /api/user/set_profile
+PATCH /api/user/change-password
+```
+
+Orders:
+
+```http
+POST /api/order/create
+GET  /api/order
+```
+
+---
+
+# Installation
+
+Clone repository:
+
+```bash
+git clone https://github.com/HoeunRaksa/ShopFlowAPI.git
+```
+
+Move into project:
+
+```bash
+cd ShopFlowAPI
+```
+
+Install dependencies:
+
+```bash
+mvn clean install
+```
+
+Run application:
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+# Database Configuration
+
+Example:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/ShopFlowDB
+spring.datasource.username=root
+spring.datasource.password=your_password
+
+spring.jpa.hibernate.ddl-auto=update
+```
+
+---
+
+# Future Improvements
+
+Planned features:
+
+- Refresh Token Authentication
+- Notification System
+- Admin Dashboard
+- Real Payment Gateway
+- Product Reviews
+- Wishlist
+- Multi-language Support
+
+---
+
+# Author
+
+**Hoeun Raksa**
+
+Full Stack Developer  
+Flutter • Spring Boot • ReactJS • Laravel
+
+GitHub:
+https://github.com/HoeunRaksa
+
+---
+
+# License
+
+Developed for learning purposes, portfolio projects, and full-stack development practice.
