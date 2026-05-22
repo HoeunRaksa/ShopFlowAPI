@@ -5,7 +5,6 @@ import com.flower.spring.response.ApiResponse;
 import com.flower.spring.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -19,4 +18,5 @@ public class LocationController {
     public ApiResponse<List<LocationResponse>> getMyLocation() {
         return service.getMyLocation();
     }
+
 }

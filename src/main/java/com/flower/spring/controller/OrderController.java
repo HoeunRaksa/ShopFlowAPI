@@ -4,11 +4,9 @@ import com.flower.spring.Dtos.LocationRequest;
 import com.flower.spring.response.ApiResponse;
 import com.flower.spring.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +14,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 public class OrderController {
     private final OrderService service;
     @PostMapping("/create")
-    public ApiResponse<String> createOrder(@RequestPart Integer Id, @RequestBody LocationRequest request){
-         return service.createOrder(Id, request);
+    public ApiResponse<String> createOrder(
+            @RequestParam(required = false)
+            Integer id,
+
+            @RequestBody(required = false)
+            LocationRequest request
+    ){
+
+        return service.createOrder(id, request);
     }
 }
