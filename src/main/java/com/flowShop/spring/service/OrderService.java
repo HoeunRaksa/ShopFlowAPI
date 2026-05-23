@@ -1,17 +1,24 @@
 package com.flowShop.spring.service;
 import com.flowShop.spring.Dtos.LocationRequest;
+import com.flowShop.spring.Dtos.ProductResponse;
 import com.flowShop.spring.Enum.OrderStatus;
 import com.flowShop.spring.config.SecurityUtils;
 import com.flowShop.spring.model.*;
 import com.flowShop.spring.repository.CartRepository;
 import com.flowShop.spring.repository.OrderRepository;
-import com.flowShop.spring.response.ApiResponse;
+import com.flowShop.spring.Enum.PaymentPurpose;
+import com.flowShop.spring.Enum.PaymentStatus;
+import com.flowShop.spring.repository.PaymentRepository;
+import com.flowShop.spring.response.OrderItemResponse;
+import com.flowShop.spring.response.ResultMessage;
+import com.flowShop.spring.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +27,9 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final LocationService locationService;
+    private final PaymentRepository paymentRepository;
 
-    public ApiResponse<String> createOrder(Integer locationId, LocationRequest request){
+    public ResultMessage<CreateOrderResponse> createOrder(Integer locationId, LocationRequest request){
           User user = securityUtils.getCurrentUser();
           Location location = locationService.saveLocation(locationId, request);
           if(request.getReceiverName() == null){
@@ -30,10 +38,9 @@ public class OrderService {
           }
           List<ItemCart> cart =  cartRepository.findByUserId(user.getId());
         if (cart.isEmpty()) {
-            return new ApiResponse<>(
-                    false,
-                    "Cart is empty",
-                    null
+            return ResultMessage.error(
+                    4006,
+                    "Cart is empty"
             );
         }
         Order order = Order.builder()
@@ -60,7 +67,30 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
         cartRepository.deleteAll(cart);
-        return  new ApiResponse<>(true,"Order is created successfully", null);
+
+        Payment payment = Payment.builder()
+                .paymentCode("PAY-" + System.currentTimeMillis())
+                .user(user)
+                .amount(totalPrice)
+                .status(PaymentStatus.PENDING)
+                .purpose(PaymentPurpose.ORDER)
+                .referenceId(order.getId().longValue())
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        paymentRepository.save(payment);
+
+        CreateOrderResponse response = CreateOrderResponse.builder()
+                .orderId(order.getId())
+                .totalAmount(totalPrice)
+                .orderStatus(order.getStatus())
+                .paymentId(payment.getId())
+                .paymentCode(payment.getPaymentCode())
+                .paymentStatus(payment.getStatus())
+                .createdAt(order.getCreateAt())
+                .build();
+
+        return ResultMessage.success(1000, "Order created successfully. Waiting for payment.", response);
     };
 
 }

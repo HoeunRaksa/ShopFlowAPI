@@ -50,10 +50,10 @@ public class UserController {
         return userService.getUserOwnerProduct(id);
     }
 
-    @PatchMapping("/upgrade-plan")
-    public ResultMessage<UpgradePlanResponse> upgradePlan(@RequestBody PlanRequest plan) {
-        return userService.upgradePlan(plan);
-    }
+//    @PatchMapping("/upgrade-plan")
+//    public ResultMessage<UpgradePlanResponse> upgradePlan(@RequestBody PlanRequest plan) {
+//        return userService.upgradePlan(plan);
+//    }
 
     @PatchMapping("/upgrade-subscription")
     public ResultMessage<UpgradeSubscriptionResponse> upgradeSubscription(

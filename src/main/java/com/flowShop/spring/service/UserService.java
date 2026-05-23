@@ -125,68 +125,68 @@ public class UserService {
            return new ApiResponse<UserResponse>(true, "success", response);
      };
 
-    public ResultMessage<UpgradePlanResponse> upgradePlan(
-            PlanRequest request
-    ) {
-
-        User user = securityUtils.getCurrentUser();
-
-        if (request.id() == null) {
-            return ResultMessage.error(4001, "Plan id is required");
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-
-        SubscriptionPlan subscriptionPlan;
-
-        switch (request.id().intValue()) {
-
-            case 1:
-                subscriptionPlan = SubscriptionPlan.FREE;
-                break;
-
-            case 2:
-                subscriptionPlan = SubscriptionPlan.PREMIUM;
-                break;
-
-            case 3:
-                subscriptionPlan = SubscriptionPlan.ULTIMATE;
-                break;
-
-            default:
-                return ResultMessage.error(
-                        4001,
-                        "Invalid subscription plan id"
-                );
-        }
-
-        user.setSubscriptionPlan(subscriptionPlan);
-        user.setSubscriptionStartDate(now);
-        user.setSubscriptionEndDate(now.plusMonths(1));
-
-        userRepository.save(user);
-
-        String planName = switch (subscriptionPlan) {
-            case PREMIUM -> "Premium Member";
-            case ULTIMATE -> "Ultimate Member";
-            default -> "Free Member";
-        };
-
-        UpgradePlanResponse response = UpgradePlanResponse.builder()
-                .userId(user.getId().longValue())
-                .plan(subscriptionPlan)
-                .planName(planName)
-                .startDate(user.getSubscriptionStartDate())
-                .endDate(user.getSubscriptionEndDate())
-                .active(true)
-                .build();
-
-        return ResultMessage.success(
-                0,
-                "Success",
-                response
-        );
-    }
+//    public ResultMessage<UpgradePlanResponse> upgradePlan(
+//            PlanRequest request
+//    ) {
+//
+//        User user = securityUtils.getCurrentUser();
+//
+//        if (request.id() == null) {
+//            return ResultMessage.error(4001, "Plan id is required");
+//        }
+//
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        SubscriptionPlan subscriptionPlan;
+//
+//        switch (request.id().intValue()) {
+//
+//            case 1:
+//                subscriptionPlan = SubscriptionPlan.FREE;
+//                break;
+//
+//            case 2:
+//                subscriptionPlan = SubscriptionPlan.PREMIUM;
+//                break;
+//
+//            case 3:
+//                subscriptionPlan = SubscriptionPlan.ULTIMATE;
+//                break;
+//
+//            default:
+//                return ResultMessage.error(
+//                        4001,
+//                        "Invalid subscription plan id"
+//                );
+//        }
+//
+//        user.setSubscriptionPlan(subscriptionPlan);
+//        user.setSubscriptionStartDate(now);
+//        user.setSubscriptionEndDate(now.plusMonths(1));
+//
+//        userRepository.save(user);
+//
+//        String planName = switch (subscriptionPlan) {
+//            case PREMIUM -> "Premium Member";
+//            case ULTIMATE -> "Ultimate Member";
+//            default -> "Free Member";
+//        };
+//
+//        UpgradePlanResponse response = UpgradePlanResponse.builder()
+//                .userId(user.getId().longValue())
+//                .plan(subscriptionPlan)
+//                .planName(planName)
+//                .startDate(user.getSubscriptionStartDate())
+//                .endDate(user.getSubscriptionEndDate())
+//                .active(true)
+//                .build();
+//
+//        return ResultMessage.success(
+//                0,
+//                "Success",
+//                response
+//        );
+//    }
 
     public ResultMessage<UpgradeSubscriptionResponse> upgradeSubscription(
             UpgradeSubscriptionRequest request

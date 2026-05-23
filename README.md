@@ -186,26 +186,63 @@ Payments:
 POST /api/payment/callback
 ```
 
-Orders:
-
 ```http
 POST /api/order/create
 GET  /api/order
 ```
 
+### Create Order (with Payment)
+
+**Endpoint:** `POST /api/order/create`
+
+**Request Body:**
+```json
+{
+    "receiverName": "John Doe",
+    "phoneNumber": "012345678",
+    "address": "Street 123, Phnom Penh"
+}
+```
+
+**Success Response:**
+```json
+{
+    "code": 1000,
+    "status": 200,
+    "message": "Order created successfully. Waiting for payment.",
+    "data": {
+        "orderId": 5,
+        "totalAmount": 25.50,
+        "orderStatus": "PENDING",
+        "paymentId": 10,
+        "paymentCode": "PAY-1716450000000",
+        "paymentStatus": "PENDING",
+        "createdAt": "2026-05-23T21:16:00"
+    }
+}
+```
+
 ---
 
-# Subscription Upgrade Flow
+# Order & Payment Flow
 
-The application implements a secure, asynchronous payment-based subscription upgrade flow:
+The application implements a secure, asynchronous payment flow for both **Subscriptions** and **Product Orders**:
 
-1. **Request Upgrade**: User sends a `PATCH` request to `/api/user/upgrade-subscription` with the desired `subscriptionId` and card details.
-2. **Payment Creation**: The backend creates a record in the `payment` table with status `PENDING`. **Sensitive card data (number, CVV) is never stored in the database.**
-3. **Gateway Verification**: The payment information is (simulated) sent to the payment gateway.
-4. **Gateway Callback**: The payment gateway notifies the backend via `POST /api/payment/callback`.
-5. **Fulfillment**: 
-   - If the status is `PAID`, the backend marks the payment as `PAID` and updates the user's `subscriptionPlan`, `startDate`, and `endDate`.
-   - If the status is `FAILED`, the payment is marked as `FAILED` and no changes are made to the user's subscription.
+### 1. Subscription Upgrade Flow
+1. **Request Upgrade**: User sends a `PATCH` request to `/api/user/upgrade-subscription`.
+2. **Payment Creation**: Backend creates a `PENDING` payment. **No card data is stored.**
+3. **Gateway Callback**: Gateway calls `POST /api/payment/callback`.
+4. **Fulfillment**: If `PAID`, user's `subscriptionPlan` is updated.
+
+### 2. Product Order Flow
+1. **Create Order**: User sends a `POST` request to `/api/order/create`.
+2. **Order & Payment Creation**: 
+   - Backend creates an `Order` with status `PENDING`.
+   - Backend creates a `Payment` with status `PENDING` linked to the order.
+3. **Gateway Callback**: Gateway calls `POST /api/payment/callback` with the `paymentId`.
+4. **Fulfillment**: 
+   - Backend marks the `Payment` as `PAID`.
+   - Backend automatically updates the `Order` status to `PAID`.
 
 ---
 

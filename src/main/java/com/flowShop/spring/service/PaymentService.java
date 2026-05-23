@@ -3,6 +3,9 @@ package com.flowShop.spring.service;
 import com.flowShop.spring.Enum.PaymentPurpose;
 import com.flowShop.spring.Enum.PaymentStatus;
 import com.flowShop.spring.Enum.SubscriptionPlan;
+import com.flowShop.spring.Enum.OrderStatus;
+import com.flowShop.spring.model.Order;
+import com.flowShop.spring.repository.OrderRepository;
 import com.flowShop.spring.model.Payment;
 import com.flowShop.spring.model.User;
 import com.flowShop.spring.repository.PaymentRepository;
@@ -20,6 +23,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     public ResultMessage<String> paymentCallback(
             PaymentCallbackRequest request
@@ -65,6 +69,16 @@ public class PaymentService {
             user.setSubscriptionEndDate(now.plusMonths(1));
 
             userRepository.save(user);
+        }
+
+        if (payment.getPurpose() == PaymentPurpose.ORDER) {
+            Order order = orderRepository.findById(payment.getReferenceId().intValue())
+                    .orElse(null);
+
+            if (order != null) {
+                order.setStatus(OrderStatus.PAID);
+                orderRepository.save(order);
+            }
         }
 
         return ResultMessage.success(
