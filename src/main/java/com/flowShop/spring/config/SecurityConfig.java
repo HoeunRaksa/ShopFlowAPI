@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/swagger-config",
                                 "/api/auth/**",
                                 "/api/category/**",
+                                "/api/payment/callback",
                                 "/uploads/**"
                         ).permitAll()
 

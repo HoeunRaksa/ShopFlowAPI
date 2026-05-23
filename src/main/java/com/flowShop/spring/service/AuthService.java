@@ -5,6 +5,7 @@ import com.flowShop.spring.Dtos.LoginRequest;
 import com.flowShop.spring.Dtos.RegisterRequest;
 import com.flowShop.spring.Dtos.UserResponse;
 import com.flowShop.spring.Enum.Role;
+import com.flowShop.spring.Enum.SubscriptionPlan;
 import com.flowShop.spring.model.User;
 import com.flowShop.spring.repository.UserRepository;
 import com.flowShop.spring.security.JwtService;
@@ -77,6 +78,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.FREE)
+                .subscriptionPlan(SubscriptionPlan.FREE)
                 .verified(false)
                 .build();
 

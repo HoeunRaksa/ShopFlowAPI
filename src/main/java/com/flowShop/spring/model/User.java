@@ -1,12 +1,14 @@
 package com.flowShop.spring.model;
 
 import com.flowShop.spring.Enum.Role;
+import com.flowShop.spring.Enum.SubscriptionPlan;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -51,6 +53,17 @@ public class User implements UserDetails {
     private String facebookLink;
 
     private String phoneNumber;
+
+    @OneToMany(mappedBy = "user")
+    private List<Subscription> subscriptions;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SubscriptionPlan subscriptionPlan = SubscriptionPlan.FREE;
+
+    private LocalDateTime subscriptionStartDate;
+
+    private LocalDateTime subscriptionEndDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

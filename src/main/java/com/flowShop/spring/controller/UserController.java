@@ -3,7 +3,12 @@ package com.flowShop.spring.controller;
 import com.flowShop.spring.Dtos.ChangePasswordRequest;
 import com.flowShop.spring.Dtos.UserResponse;
 import com.flowShop.spring.Dtos.User_Request_Contact;
+import com.flowShop.spring.request.PlanRequest;
+import com.flowShop.spring.request.UpgradeSubscriptionRequest;
 import com.flowShop.spring.response.ApiResponse;
+import com.flowShop.spring.response.ResultMessage;
+import com.flowShop.spring.response.UpgradePlanResponse;
+import com.flowShop.spring.response.UpgradeSubscriptionResponse;
 import com.flowShop.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +50,17 @@ public class UserController {
         return userService.getUserOwnerProduct(id);
     }
 
+    @PatchMapping("/upgrade-plan")
+    public ResultMessage<UpgradePlanResponse> upgradePlan(@RequestBody PlanRequest plan) {
+        return userService.upgradePlan(plan);
+    }
+
+    @PatchMapping("/upgrade-subscription")
+    public ResultMessage<UpgradeSubscriptionResponse> upgradeSubscription(
+            @RequestBody UpgradeSubscriptionRequest request
+    ) {
+        return userService.upgradeSubscription(request);
+    }
 
 
 }

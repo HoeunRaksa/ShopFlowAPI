@@ -1,5 +1,7 @@
 package com.flowShop.spring.Dtos;
 
+import com.flowShop.spring.model.Subscription;
+import com.flowShop.spring.response.SubscriptionResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +17,7 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String imageUrl;
+    private SubscriptionResponse subscription;
 
     private String telegramLink;
     private String facebookLink;
