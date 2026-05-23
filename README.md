@@ -106,6 +106,13 @@ utils/
 
 ---
 
+# Roadmap & Missing Features
+
+For a detailed list of features that are currently missing and planned for future development, please refer to:
+👉 **[Missing Features & Future Roadmap](missing_features.md)**
+
+---
+
 # Example API Endpoints
 
 Authentication:
@@ -133,6 +140,7 @@ PUT /api/user/set_profile
 PATCH /api/user/change-password
 PATCH /api/user/upgrade-subscription
 PATCH /api/user/upgrade-plan
+GET /api/user/subscriptions
 ```
 
 ### Upgrade Plan (Direct)
@@ -236,13 +244,15 @@ The application implements a secure, asynchronous payment flow for both **Subscr
 
 ### 2. Product Order Flow
 1. **Create Order**: User sends a `POST` request to `/api/order/create`.
-2. **Order & Payment Creation**: 
+2. **Persistence & Payment Creation**: 
    - Backend creates an `Order` with status `PENDING`.
+   - **Order History**: Backend saves all `OrderItem` details (product, quantity, price) linked to the order to ensure persistent history.
    - Backend creates a `Payment` with status `PENDING` linked to the order.
 3. **Gateway Callback**: Gateway calls `POST /api/payment/callback` with the `paymentId`.
-4. **Fulfillment**: 
+4. **Verification & Fulfillment**: 
    - Backend marks the `Payment` as `PAID`.
    - Backend automatically updates the `Order` status to `PAID`.
+   - **Cart Cleanup**: The user's shopping cart is cleared **only after** successful payment, as the order information is already securely stored in the database history.
 
 ---
 

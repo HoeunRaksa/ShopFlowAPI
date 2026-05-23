@@ -5,6 +5,7 @@ import com.flowShop.spring.Enum.PaymentStatus;
 import com.flowShop.spring.Enum.SubscriptionPlan;
 import com.flowShop.spring.Enum.OrderStatus;
 import com.flowShop.spring.model.Order;
+import com.flowShop.spring.repository.CartRepository;
 import com.flowShop.spring.repository.OrderRepository;
 import com.flowShop.spring.model.Payment;
 import com.flowShop.spring.model.User;
@@ -24,6 +25,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
 
     public ResultMessage<String> paymentCallback(
             PaymentCallbackRequest request
@@ -78,6 +80,10 @@ public class PaymentService {
             if (order != null) {
                 order.setStatus(OrderStatus.PAID);
                 orderRepository.save(order);
+
+                // Remove items from cart after payment success
+                var cartItems = cartRepository.findByUserId(payment.getUser().getId());
+                cartRepository.deleteAll(cartItems);
             }
         }
 

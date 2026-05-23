@@ -7,6 +7,7 @@ import com.flowShop.spring.request.PlanRequest;
 import com.flowShop.spring.request.UpgradeSubscriptionRequest;
 import com.flowShop.spring.response.ApiResponse;
 import com.flowShop.spring.response.ResultMessage;
+import com.flowShop.spring.response.SubscriptionHistoryResponse;
 import com.flowShop.spring.response.UpgradePlanResponse;
 import com.flowShop.spring.response.UpgradeSubscriptionResponse;
 import com.flowShop.spring.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 @RestController
 @RequiredArgsConstructor
@@ -60,6 +62,11 @@ public class UserController {
             @RequestBody UpgradeSubscriptionRequest request
     ) {
         return userService.upgradeSubscription(request);
+    }
+
+    @GetMapping("/subscriptions")
+    public ResultMessage<List<SubscriptionHistoryResponse>> getSubscriptionHistory() {
+        return userService.getSubscriptionHistory();
     }
 
 

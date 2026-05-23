@@ -88,19 +88,57 @@ The endpoint called by the payment gateway to confirm the payment status.
 }
 ```
 
+## 3. Order History
+
+Retrieves the authenticated user's order history.
+
+**Endpoint:** `GET http://localhost:8080/api/order`
+
+**Success Response (Status 200):**
+```json
+{
+    "code": 1002,
+    "status": 200,
+    "message": "Order history retrieved successfully",
+    "data": [
+        {
+            "id": 5,
+            "totalPrice": 25.50,
+            "status": "PAID",
+            "createAt": "2026-05-23T21:16:00",
+            "items": [
+                {
+                    "id": 12,
+                    "product": {
+                        "id": 101,
+                        "name": "Wireless Mouse",
+                        "price": 10.50,
+                        "imageUrl": "http://localhost:8080/uploads/mouse.jpg"
+                    },
+                    "quantity": 1,
+                    "price": 10.50
+                }
+            ]
+        }
+    ]
+}
+```
+
 ---
 
 ## Order Process Logic
 
 1. **User Checkout**: User calls `/api/order/create`.
-2. **Backend Logic**:
+2. **Backend Logic & Data Persistence**:
    - Validates the cart (must not be empty).
    - Calculates total price.
-   - Saves `Order` with `PENDING` status.
-   - Clears the user's `Cart`.
+   - **Saves `Order` information**: A new record is created in the `orders` table with `PENDING` status.
+   - **Saves `OrderItem` details**: Every item from the cart is persisted into the `order_items` table linked to the `Order`. This ensures that even if the cart is later cleared, the full **Order History** is preserved for the user.
    - Creates a `Payment` record with `PENDING` status linked to the `Order`.
 3. **Payment Processing**: The frontend uses the `paymentCode` to process the payment with the gateway.
 4. **Gateway Callback**: Gateway calls `/api/payment/callback`.
-5. **Verification**:
-   - If status is `PAID`, both `Payment` and `Order` are updated to `PAID`.
-   - If status is `FAILED`, `Payment` is updated to `FAILED`, and the `Order` remains `PENDING` (awaiting another payment attempt).
+5. **Verification & Fulfillment**:
+   - If status is `PAID`:
+     - Both `Payment` and `Order` are updated to `PAID`.
+     - The user's **Cart is cleared** (since the order is now finalized and info is securely saved in history).
+   - If status is `FAILED`, `Payment` is updated to `FAILED`, and the `Order` remains `PENDING` (awaiting another payment attempt, cart remains intact).

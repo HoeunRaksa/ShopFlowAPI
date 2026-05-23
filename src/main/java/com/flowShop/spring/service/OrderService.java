@@ -10,6 +10,7 @@ import com.flowShop.spring.Enum.PaymentPurpose;
 import com.flowShop.spring.Enum.PaymentStatus;
 import com.flowShop.spring.repository.PaymentRepository;
 import com.flowShop.spring.response.OrderItemResponse;
+import com.flowShop.spring.response.OrderHistoryResponse;
 import com.flowShop.spring.response.ResultMessage;
 import com.flowShop.spring.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,6 @@ public class OrderService {
         order.setItem(orderItems);
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
-        cartRepository.deleteAll(cart);
 
         Payment payment = Payment.builder()
                 .paymentCode("PAY-" + System.currentTimeMillis())
@@ -91,6 +91,35 @@ public class OrderService {
                 .build();
 
         return ResultMessage.success(1000, "Order created successfully. Waiting for payment.", response);
-    };
+    }
+
+    public ResultMessage<List<OrderHistoryResponse>> getOrderHistory() {
+        User user = securityUtils.getCurrentUser();
+        List<Order> orders = orderRepository.findByBuyerOrderByCreateAtDesc(user);
+
+        List<OrderHistoryResponse> response = orders.stream()
+                .map(order -> OrderHistoryResponse.builder()
+                        .id(order.getId())
+                        .totalPrice(order.getTotalPrice())
+                        .status(order.getStatus())
+                        .createAt(order.getCreateAt())
+                        .items(order.getItem().stream()
+                                .map(item -> OrderItemResponse.builder()
+                                        .id(item.getId())
+                                        .product(ProductResponse.builder()
+                                                .id(item.getProduct().getId())
+                                                .name(item.getProduct().getName())
+                                                .price(item.getProduct().getPrice())
+                                                .imageUrl(item.getProduct().getImageUrl())
+                                                .build())
+                                        .quantity(item.getQuantity())
+                                        .price(item.getPrice())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResultMessage.success(1002, "Order history retrieved successfully", response);
+    }
 
 }

@@ -7,8 +7,10 @@ import com.flowShop.spring.Enum.PaymentStatus;
 import com.flowShop.spring.Enum.SubscriptionPlan;
 import com.flowShop.spring.config.SecurityUtils;
 import com.flowShop.spring.model.Payment;
+import com.flowShop.spring.model.Subscription;
 import com.flowShop.spring.model.User;
 import com.flowShop.spring.repository.PaymentRepository;
+import com.flowShop.spring.repository.SubscriptionPlanRepository;
 import com.flowShop.spring.repository.UserRepository;
 import com.flowShop.spring.request.PlanRequest;
 import com.flowShop.spring.request.UpgradeSubscriptionRequest;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class UserService {
     private final SecurityUtils securityUtils;
     private final PasswordEncoder passwordEncoder;
     private final PaymentRepository paymentRepository;
+    private final SubscriptionPlanRepository subscriptionPlanRepository;
 
     public String uploadUserImage(MultipartFile file) throws IOException {
         User user = (User) SecurityContextHolder
@@ -248,5 +253,22 @@ public class UserService {
                 "Payment created successfully. Waiting for payment confirmation.",
                 response
         );
+    }
+
+    public ResultMessage<List<SubscriptionHistoryResponse>> getSubscriptionHistory() {
+        User user = securityUtils.getCurrentUser();
+        List<Subscription> subscriptions = subscriptionPlanRepository.findByUserOrderByStartDateDesc(user);
+
+        List<SubscriptionHistoryResponse> response = subscriptions.stream()
+                .map(sub -> SubscriptionHistoryResponse.builder()
+                        .id(sub.getId())
+                        .plan(sub.getPlan())
+                        .startDate(sub.getStartDate())
+                        .endDate(sub.getEndDate())
+                        .active(sub.getActive())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResultMessage.success(1003, "Subscription history retrieved successfully", response);
     }
 }
