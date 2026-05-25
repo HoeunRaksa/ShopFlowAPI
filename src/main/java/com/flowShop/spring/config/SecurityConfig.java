@@ -51,7 +51,9 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/category/**",
                                 "/api/payment/callback",
-                                "/uploads/**"
+                                "/uploads/**",
+                                "/api/subscription",
+                                "/api/subscriptionEntry"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/product/create").authenticated()

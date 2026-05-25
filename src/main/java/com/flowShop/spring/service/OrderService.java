@@ -33,7 +33,7 @@ public class OrderService {
     public ResultMessage<CreateOrderResponse> createOrder(Integer locationId, LocationRequest request){
           User user = securityUtils.getCurrentUser();
           Location location = locationService.saveLocation(locationId, request);
-          if(request.getReceiverName() == null){
+          if(location.getReceiverName() == null){
               String receiverName = user.getFirstName() +" "+ user.getFirstName();
               location.setReceiverName(receiverName);
           }
