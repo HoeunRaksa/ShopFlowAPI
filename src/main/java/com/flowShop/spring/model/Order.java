@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,8 +22,12 @@ public class Order {
     private Integer Id;
     @ManyToOne
     private User buyer;
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> item;
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderItem> item = new ArrayList<>();
     private Double totalPrice;
     @ManyToOne
     @JoinColumn(name = "location_id")

@@ -3,6 +3,9 @@ package com.flowShop.spring.response;
 import com.flowShop.spring.Dtos.ProductResponse;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Getter
 @Setter
 @Builder
@@ -13,4 +16,5 @@ public class OrderItemResponse {
     private ProductResponse product;
     private Integer quantity;
     private Double price;
+    private LocalDateTime dateTime;
 }

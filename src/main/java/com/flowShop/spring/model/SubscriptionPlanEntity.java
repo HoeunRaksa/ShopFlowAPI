@@ -19,8 +19,7 @@ public class SubscriptionPlanEntity{
     private String title;
     private Double price;
     private String description;
-    @OneToMany(mappedBy = "subscriptionPlan",
-            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subscriptionPlan", cascade = CascadeType.ALL)
     private List<SubscriptionFeature> features;
     private Boolean active;
 }

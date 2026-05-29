@@ -34,7 +34,6 @@ public class SubscriptionEntryPlanService {
                 .price(entity.getPrice())
                 .description(entity.getDescription())
                 .active(entity.getActive())
-
                 .features(
                         entity.getFeatures()
                                 .stream()
@@ -45,11 +44,7 @@ public class SubscriptionEntryPlanService {
                                                 .build()
                                 )
                                 .toList()
-                )
-
-                .build();
+                ).build();
     }
-
-
 
 }

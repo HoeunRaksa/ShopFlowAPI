@@ -52,22 +52,4 @@ public class UserController {
         return userService.getUserOwnerProduct(id);
     }
 
-//    @PatchMapping("/upgrade-plan")
-//    public ResultMessage<UpgradePlanResponse> upgradePlan(@RequestBody PlanRequest plan) {
-//        return userService.upgradePlan(plan);
-//    }
-
-    @PatchMapping("/upgrade-subscription")
-    public ResultMessage<UpgradeSubscriptionResponse> upgradeSubscription(
-            @RequestBody UpgradeSubscriptionRequest request
-    ) {
-        return userService.upgradeSubscription(request);
-    }
-
-    @GetMapping("/subscriptions")
-    public ResultMessage<List<SubscriptionHistoryResponse>> getSubscriptionHistory() {
-        return userService.getSubscriptionHistory();
-    }
-
-
 }

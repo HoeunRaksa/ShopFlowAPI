@@ -18,6 +18,7 @@ public class OrderItem {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "order_id")
     private Order order;
     @ManyToOne
     private Product product;
