@@ -94,34 +94,52 @@ public class OrderService {
     }
 
     public ResultMessage<List<OrderHistoryResponse>> getOrderHistory() {
+
         User user = securityUtils.getCurrentUser();
-        List<Order> orders = orderRepository.findByBuyerOrderByCreateAtDesc(user);
-
-        List<OrderHistoryResponse> response = orders.stream()
-                .map(order -> OrderHistoryResponse.builder()
-                        .id(order.getId())
-                        .totalPrice(order.getTotalPrice())
-                        .status(order.getStatus())
-                        .createAt(order.getCreateAt())
-                        .items(order.getItem().stream()
-                                .map(item -> OrderItemResponse.builder()
-                                        .id(item.getId())
-                                        .product(ProductResponse.builder()
-                                                .id(item.getProduct().getId())
-                                                .name(item.getProduct().getName())
-                                                .price(item.getProduct().getPrice())
-                                                .description(item.getProduct().getDescription())
-                                                .imageUrl(item.getProduct().getImageUrl())
-                                                .build())
-                                        .quantity(item.getQuantity())
-                                        .price(item.getPrice())
-                                        .dateTime(item.getOrder().getCreateAt())
-                                        .build())
-                                .collect(Collectors.toList()))
-                        .build())
-                .collect(Collectors.toList());
-
+        System.out.println("Current User ID: " + user.getId());
+        List<OrderHistoryResponse> response = orderRepository.findByBuyer(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+        System.out.println("Orders found: " + response.size());
         return ResultMessage.success(1002, "Order history retrieved successfully", response);
+    }
+
+    public ResultMessage<List<OrderHistoryResponse>> getSellHistory() {
+
+        User user = securityUtils.getCurrentUser();
+
+        List<OrderHistoryResponse> response = orderRepository
+                .findDistinctByItem_Product_User(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+
+        return ResultMessage.success(1002, "Sell history retrieved successfully", response);
+    }
+
+    private OrderHistoryResponse toResponse(Order order) {
+        return OrderHistoryResponse.builder()
+                .id(order.getId())
+                .totalPrice(order.getTotalPrice())
+                .status(order.getStatus())
+                .createAt(order.getCreateAt())
+                .items(order.getItem().stream()
+                        .map(item -> OrderItemResponse.builder()
+                                .id(item.getId())
+                                .product(ProductResponse.builder()
+                                        .id(item.getProduct().getId())
+                                        .name(item.getProduct().getName())
+                                        .price(item.getProduct().getPrice())
+                                        .description(item.getProduct().getDescription())
+                                        .imageUrl(item.getProduct().getImageUrl())
+                                        .build())
+                                .quantity(item.getQuantity())
+                                .price(item.getPrice())
+                                .dateTime(item.getOrder().getCreateAt())
+                                .build())
+                        .toList())
+                .build();
     }
 
 }

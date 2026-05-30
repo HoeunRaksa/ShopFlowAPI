@@ -31,4 +31,8 @@ public class OrderController {
     public ResultMessage<List<OrderHistoryResponse>> getOrderHistory() {
         return service.getOrderHistory();
     }
+    @GetMapping("/selling-history")
+    public ResultMessage<List<OrderHistoryResponse>> getSellHistory(){
+        return  service.getSellHistory();
+    }
 }
